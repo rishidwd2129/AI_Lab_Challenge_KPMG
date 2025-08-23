@@ -1,5 +1,6 @@
 # tool_definitions.py
 import os
+import uuid
 from dotenv import load_dotenv
 from langchain_core.tools import tool
 from tavily import TavilyClient
@@ -92,6 +93,35 @@ def search_recent_company_news(company_name: str) -> list[str]:
         return content
     except Exception as e:
         return [f"Error during Tavily search: {e}"]
+
+
+
+@tool
+def create_google_doc(title: str, content: str) -> str:
+    """
+    Use this tool to create a new Google Doc with a specific title and content. 
+    This is the final step for presenting a summary or report.
+
+    Args:
+        title: The title for the new Google Doc.
+        content: The text content to be written into the document.
+
+    Returns:
+        A confirmation message with the new document's URL.
+    """
+    print(f"--- TOOL: Simulating creation of Google Doc titled '{title}' ---")
+    
+    # Generate a unique-looking ID for the fake document
+    doc_id = str(uuid.uuid4())
+    
+    # In a real implementation, this is where you would use the Google Docs API.
+    # For now, we just print the content that would be written.
+    print("\n--- Document Content ---")
+    print(content)
+    print("------------------------")
+    
+    fake_url = f"https://docs.google.com/document/d/{doc_id}"
+    return f"Successfully created Google Doc titled '{title}'. You can view it here: {fake_url}"
 
 
 # The agent can now directly use these functions.

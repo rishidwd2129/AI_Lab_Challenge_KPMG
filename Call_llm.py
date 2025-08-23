@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-import torch
+# import torch
 from transformers import pipeline
 from google import genai
 
@@ -43,7 +43,7 @@ class LLM_Pipeline:
         return outputs
     
 
-    def call_planner(self, query: str) -> str:
+    def Gemini_API(self, query: str) -> str:
         
 
         response = self.client.models.generate_content(
