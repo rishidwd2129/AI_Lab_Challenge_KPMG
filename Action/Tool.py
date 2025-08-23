@@ -4,9 +4,11 @@ import uuid
 from dotenv import load_dotenv
 from langchain_core.tools import tool
 from tavily import TavilyClient
-
+from Call_llm import LLM_Pipeline
 # Load variables from .env file
 load_dotenv()
+
+
 
 @tool
 def read_google_sheet(file_name: str) -> list[dict]:
@@ -35,14 +37,14 @@ def read_google_sheet(file_name: str) -> list[dict]:
     }
 
     if file_name in mock_sheets_db:
-        return mock_sheets_db
+        return mock_sheets_db[file_name]
     else:
         # In a real agent, this would raise an error to be caught
         # by the Executor for a recovery attempt.
         raise FileNotFoundError(f"The sheet '{file_name}' was not found.")
 
 @tool
-def Get_highest_sale_record(data : list[dict]) -> dict:
+def get_highest_sale_record(data : list[dict]) -> dict:
     """
     Use this tool to analyze a list of sales records and identify the single record 
     with the highest sales value. The input should be a list of dictionaries, 
@@ -62,7 +64,7 @@ def Get_highest_sale_record(data : list[dict]) -> dict:
     return highest_sales_record
 
 @tool
-def search_recent_company_news(company_name: str) -> list[str]:
+def search_recent_company_news(company_name: str) -> str:
     """
     Searches the web for recent, relevant news articles about a specific 
     company using the Tavily Search API.
@@ -78,7 +80,7 @@ def search_recent_company_news(company_name: str) -> list[str]:
 
     # 2. Perform the search
     # We construct a query focused on recent news.
-    search_query = f"latest fibancial news and developments for {company_name}"
+    search_query = f"latest financial news and developments for {company_name}"
     
     try:
         response = tavily_client.search(
@@ -126,7 +128,7 @@ def create_google_doc(title: str, content: str) -> str:
 
 # The agent can now directly use these functions.
 # LangChain handles the registry creation in the background.
-tools = [read_google_sheet, search_recent_company_news]
+tools = [read_google_sheet, get_highest_sale_record, search_recent_company_news, create_google_doc]
 
 if __name__ == "__main__":
   
@@ -134,7 +136,7 @@ if __name__ == "__main__":
     print(f"Data from Google Sheet: {data}")
     # print(type(data['Q3 Sales']))
     # input_data = {"data": mock_db["Q3 Sales"]}
-    higest = Get_highest_sale_record.invoke({"data": data['Q3 Sales']})
+    higest = get_highest_sale_record.invoke({"data": data})
     print(f"Record with the highest sales: ----------------------\n {higest}")
 # 
     # news = search_recent_company_news("KPMG")

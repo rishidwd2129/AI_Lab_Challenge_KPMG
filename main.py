@@ -1,3 +1,7 @@
+
+
+
+
 def main():
 
 
@@ -10,8 +14,4 @@ def main():
         # consolidate outputs form the tools and create the final prompt and then make the final LLM call
         
 
-    print("Hello from ai-lab-challenge-kpmg!")
-
-
-if __name__ == "__main__":
-    main()
+    pass

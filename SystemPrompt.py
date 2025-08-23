@@ -41,7 +41,7 @@ You MUST respond with only a valid JSON object that represents this plan. Do not
 
 ## AVAILABLE TOOLS:
 - `read_google_sheet(file_name: str)`: Reads all data from a named Google Sheet.
-- `get_highest_sales_record(data: list[dict])`: Analyzes a list of records to find the one with the highest 'sales' value.
+- `get_highest_sale_record(data: list[dict])`: Analyzes a list of records to find the one with the highest 'sales' value.
 - `search_recent_company_news(company_name: str)`: Searches the web for recent news about a specific company.
 - `create_google_doc(title: str, content: str)`: Creates a Google Doc with a title and content.
 
@@ -72,7 +72,7 @@ Your JSON Output:
     }},
     {{
       "step": 2,
-      "tool": "get_highest_sales_record",
+      "tool": "get_highest_sale_record",
       "params": {{
         "data": "$ref.step_1.output"
       }},
@@ -106,6 +106,34 @@ Your JSON Output:
     PLANNER_PROMPT_TEMPLATE = PLANNER_PROMPT_TEMPLATE.format(query=query)
     return PLANNER_PROMPT_TEMPLATE
 
+
+def DocTemplate(title: str, content: str, Sheet_Data : str) -> str:
+    doc_prompt = f'''You are an expert Google Docs assistant. Your goal is to create a well-structured and informative document based on the provided title and content.
+
+        Instructions:
+
+        Document Title: Use the provided title as the heading of the document.
+
+        Content Structure: Organize the content into clear sections with appropriate headings. Ensure that each section flows logically to the next.
+
+        Clarity and Conciseness: Write in a clear and concise manner. Avoid unnecessary jargon and ensure that the information is easily understandable.
+
+        Formatting: Use bullet points, numbered lists, and bold text where appropriate to enhance readability.
+
+        No Outside Information: Do NOT add any information that is not included in the provided content. Stick strictly to the given material.
+
+        If the Content is Empty or Irrelevant: If the content provided is empty or does not relate to the title, state clearly: "No relevant content available to create the document."
+
+        [DOCUMENT TITLE]
+
+        {title}
+
+        [DOCUMENT CONTENT]
+
+        {content}
+
+        Create a well-structured Google Doc based on the above title and content.'''
+    return doc_prompt
 
 if __name__ == "__main__":
     # Example usage
