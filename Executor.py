@@ -4,10 +4,10 @@ from Call_llm import LLM_Pipeline
 from SystemPrompt import DocTemplate
 
 class AgentExecutor:
-    def __init__(self, tools: list):
+    def __init__(self, tools: list, pipe):
         """Initializes the executor with a tool registry."""
         self.tools = {tool.name: tool for tool in tools}
-        self.pipe = LLM_Pipeline(model_id="Qwen/Qwen2-1.5B-Instruct")
+        self.pipe = pipe
         print("Executor initialized with the following tools:", list(self.tools.keys()))
     # Helper function to resolve parameter references : Used in execute_plan
     def _resolve_params(self, params: dict, step_outputs: dict) -> dict:
@@ -19,6 +19,8 @@ class AgentExecutor:
                 ref_path = value.split('.')
                 step_num_str = ref_path[1] # "step_N"
                 step_num = int(step_num_str.split('_')[1])
+                
+                
                 
                 # Get the entire output from the referenced step
                 referenced_output = step_outputs.get(step_num)
@@ -43,9 +45,14 @@ class AgentExecutor:
 
         step_outputs = {}
         # Sort the plan by step number to ensure correct execution order
+        # print(50*"=")
+        # print("This is IT")
+        # print(plan["plan"])
+        # print(50*"=")
         sorted_plan = sorted(plan["plan"], key=lambda x: x["step"])
         TOP_RESULT:dict
         for step in sorted_plan:
+            print(50*"=")
             step_num = step["step"]
             tool_name = step["tool"]
             params = step["params"]

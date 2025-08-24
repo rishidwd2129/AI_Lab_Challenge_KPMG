@@ -2,9 +2,9 @@ from Call_llm import LLM_Pipeline
 from SystemPrompt import PlannerTemplate
 
 
-pipe = LLM_Pipeline()
+# pipe = LLM_Pipeline()
 
-def call_planner(user_query: str) -> str:
+def call_planner(user_query: str, pipe) -> str:
     Input = PlannerTemplate(user_query)
     response = pipe.Gemini_API(Input)
     return response

@@ -5,6 +5,8 @@ from dotenv import load_dotenv
 from langchain_core.tools import tool
 from tavily import TavilyClient
 from Call_llm import LLM_Pipeline
+import docx
+from datetime import datetime
 # Load variables from .env file
 load_dotenv()
 
@@ -26,16 +28,14 @@ def read_google_sheet(file_name: str) -> list[dict]:
     # Mock data representing the sheet's content for this example
     mock_sheets_db = {
         "Q3 Sales": [
-            {"company": "Innovate Inc.", "sales": 500000},
-            {"company": "QuantumLeap Co.", "sales": 850000},
-            {"company": "DataWeavers", "sales": 620000},
-            {"company": "AlphaTech", "sales": 780000},
-            {"company": "KPMG", "sales": 950000},
-            {"company": "Solutions Hub", "sales": 450000},
-            {"company": "NextGen Partners", "sales": 890000}
-        ]
-    }
-
+    {"company": "Innovate Inc.", "sales": 995000000},
+    {"company": "QuantumLeap Co.", "sales": 7000000},
+    {"company": "DataWeavers", "sales": 3500000},
+    {"company": "AlphaTech", "sales": 650000},
+    {"company": "KPMG", "sales": 38400000000},
+    {"company": "Infosys", "sales": 19280000000},
+    {"company": "NextGen Partners", "sales": 7600000}
+]}
     if file_name in mock_sheets_db:
         return mock_sheets_db[file_name]
     else:
@@ -115,14 +115,28 @@ def create_google_doc(title: str, content: str) -> str:
     
     # Generate a unique-looking ID for the fake document
     doc_id = str(uuid.uuid4())
-    
+    output_dir = "../output_documents"
+    os.makedirs(output_dir, exist_ok=True)
+    # 2. Create a safe filename base from the title
+    safe_title = "".join(c for c in title if c.isalnum() or c in (' ', '_')).rstrip()
+    safe_title = safe_title.replace(' ', '_')
+     # NEW: Generate a unique timestamp
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    # NEW: Combine the title and timestamp for the final filename
+    final_filename = f"{safe_title}_{timestamp}.docx"
+    file_path = os.path.join(output_dir, final_filename)
+    document = docx.Document()
+    document.add_heading(title, level=1)
+    document.add_paragraph(content)
+    document.save(file_path)
     # In a real implementation, this is where you would use the Google Docs API.
     # For now, we just print the content that would be written.
     print("\n--- Document Content ---")
     print(content)
     print("------------------------")
     
-    fake_url = f"https://docs.google.com/document/d/{doc_id}"
+    # fake_url = f"https://docs.google.com/document/d/{doc_id}"
+    fake_url = file_path
     return f"Successfully created Google Doc titled '{title}'. You can view it here: {fake_url}"
 
 

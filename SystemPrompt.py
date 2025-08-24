@@ -108,31 +108,35 @@ Your JSON Output:
 
 
 def DocTemplate(title: str, content: str, Sheet_Data : str) -> str:
-    doc_prompt = f'''You are an expert Google Docs assistant. Your goal is to create a well-structured and informative document based on the provided title and content.
+    doc_prompt = f"""
+You are a professional business analyst. Your task is to write a concise, clear, and informative summary for an internal report.
 
-        Instructions:
+**INSTRUCTIONS:**
+- Synthesize the provided **Top Sales Data** and the **Recent News Articles** into a single, coherent summary.
+- Start with the key finding from the sales data.
+- Then, connect this performance to the information found in the news articles.
+- Maintain a professional and neutral tone.
+- Do not add any headers, titles, or conversational text. Generate only the body of the summary itself.
 
-        Document Title: Use the provided title as the heading of the document.
+---
 
-        Content Structure: Organize the content into clear sections with appropriate headings. Ensure that each section flows logically to the next.
+**DOCUMENT TITLE:**
+{title}
 
-        Clarity and Conciseness: Write in a clear and concise manner. Avoid unnecessary jargon and ensure that the information is easily understandable.
+---
 
-        Formatting: Use bullet points, numbered lists, and bold text where appropriate to enhance readability.
+**TOP SALES DATA:**
+{Sheet_Data}
 
-        No Outside Information: Do NOT add any information that is not included in the provided content. Stick strictly to the given material.
+---
 
-        If the Content is Empty or Irrelevant: If the content provided is empty or does not relate to the title, state clearly: "No relevant content available to create the document."
+**RECENT NEWS ARTICLES (Snippets):**
+{content}
 
-        [DOCUMENT TITLE]
+---
 
-        {title}
-
-        [DOCUMENT CONTENT]
-
-        {content}
-
-        Create a well-structured Google Doc based on the above title and content.'''
+**GENERATED SUMMARY:**
+"""
     return doc_prompt
 
 if __name__ == "__main__":
