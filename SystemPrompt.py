@@ -139,6 +139,46 @@ You are a professional business analyst. Your task is to write a concise, clear,
 """
     return doc_prompt
 
+
+
+def RouterTemplate(user_query: str) -> str:
+  RouterTemplate = f"""
+You are an expert routing agent. Your purpose is to analyze a user's query and decide if it can be answered directly by a conversational AI or if it requires a complex, multi-step plan using a set of specialized tools.
+
+## AVAILABLE TOOLS:
+- `read_google_sheet(file_name: str)`: Reads data from a spreadsheet.
+- `get_highest_sales_record(data: list[dict])`: Analyzes sales data to find the top record.
+- `search_recent_company_news(company_name: str)`: Searches the web for company news.
+- `create_google_doc(title: str, content: str)`: Creates a document.
+
+## ROUTING LOGIC:
+- If the user query is a simple question, a greeting, or a request for information that does not require using the tools, you must route it to the "generator".
+- If the user query explicitly or implicitly requires reading files, analyzing data, searching the web, and creating a document, you must route it to the "planner".
+
+## OUTPUT FORMAT:
+You MUST respond with only a valid JSON object with a single key "route" and one of two possible values: "planner" or "generator".
+
+## EXAMPLES:
+User Query: "What is the capital of Germany?"
+Your JSON Output:
+{{
+  "route": "generator"
+}}
+
+User Query: "Please analyze the Q3 sales data, find the top company, and write a report on them."
+Your JSON Output:
+{{
+  "route": "planner"
+}}
+
+## USER REQUEST:
+{user_query}
+
+## YOUR JSON ROUTE:
+"""
+  return RouterTemplate
+
+
 if __name__ == "__main__":
     # Example usage
     query = "What is the capital of France?"
